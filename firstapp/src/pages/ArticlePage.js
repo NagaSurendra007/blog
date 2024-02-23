@@ -1,7 +1,7 @@
 function ArticlePage(){
     return(
         <>
-        return1 page 
+        ArticlePage
         </>
     );
 }

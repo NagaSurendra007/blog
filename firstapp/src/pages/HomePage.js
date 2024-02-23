@@ -1,7 +1,7 @@
 function HomePage(){
     return(
         <>
-        return3 page 
+       HomePage
         </>
     );
 }

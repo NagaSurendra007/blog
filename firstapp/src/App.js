@@ -1,20 +1,31 @@
+
+  
+import {BrowserRouter,Routes,Route } from "react-router-dom"
 import AboutPage from "./pages/AboutPage";
 import ArticlePage from "./pages/ArticlePage";
-import ArticlesPage from "./pages/ArticlesList";
+import ArticlesListPage from "./pages/ArticlesList";
 import HomePage from "./pages/HomePage";
 import NotfoundPage from "./pages/NotfoundPage";
 
 function App(){
     return(
-        <>
-        App.js
-        <AboutPage></AboutPage>
-        <ArticlePage></ArticlePage>
-        <ArticlesPage></ArticlesPage>
-        <HomePage></HomePage>
-        <NotfoundPage></NotfoundPage>
+     <BrowserRouter>
+        <div className = "App">
+            <h1>First React Page</h1>
+            <div id ="page-body">           
+        <Routes>
+              <Route path ="/" element = {<HomePage/>}></Route>
+             <Route path ="/About" element = {<AboutPage/>}></Route>
+             <Route path ="/Article" element = {<ArticlePage/>}></Route>
+             <Route path ="/Articles/:articleId" element = {<ArticlesListPage/>}></Route>
+             <Route path ="*" element = {<NotfoundPage/>}></Route>
+           
+        </Routes>
+        </div>
+        </div>
+    </BrowserRouter>
 
-        </>
     );
 }
+
 export default App;

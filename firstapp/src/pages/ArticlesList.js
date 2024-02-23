@@ -1,7 +1,7 @@
 function ArticlesPage(){
     return(
         <>
-        return2 page 
+        ArticlesListPage
         </>
     );
 }
