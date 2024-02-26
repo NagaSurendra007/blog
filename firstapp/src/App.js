@@ -6,6 +6,7 @@ import ArticlePage from "./pages/ArticlePage";
 import ArticlesListPage from "./pages/ArticlesList";
 import HomePage from "./pages/HomePage";
 import NotfoundPage from "./pages/NotfoundPage";
+import article from "./pages/Article-content"
 
 function App(){
     return(
