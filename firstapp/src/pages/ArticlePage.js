@@ -11,7 +11,7 @@ function ArticlePage(){
           <>
              <h1>{article.title}</h1>
              {article.content.map(paragraph=>(
-                <p>{paragraph}</p>
+                <p key ={i}>{paragraph}</p>
              ))}
            </>
          );
