@@ -3,10 +3,9 @@ import './App.css'
 import {BrowserRouter,Routes,Route } from "react-router-dom"
 import AboutPage from "./pages/AboutPage";
 import ArticlePage from "./pages/ArticlePage";
-import ArticlesListPage from "./pages/ArticlesList";
+import ArticlesListPage from "./pages/ArticlesListPage";
 import HomePage from "./pages/HomePage";
 import NotfoundPage from "./pages/NotfoundPage";
-import article from "./pages/Article-content"
 
 function App(){
     return(
