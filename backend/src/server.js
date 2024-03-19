@@ -1,53 +1,70 @@
 import express from 'express';
-
-let articleInfo = [{
-    name : 'split.js',
-    likes : 0,
-    comments:["hello"]
-
-},
-{
-    name: 'map.js',
-    likes : 0,
-    comments:[]
-
-},
-{
-    name : 'filter.js',
-    likes: 0,
-    comments:[]
-
-}
-];
+import {db,connectToDb} from './db.js';
 
 const app = express();
 app.use(express.json());
 
-const findArticle = (name) => articleInfo.find((article)=>article.name===name);
-app.put("/api/articles/:name/likes",(req,res)=>{
-     const {name}=req.params;
-     const article= articleInfo.find(article=>article.name===name);
-     if(article) {
-        article.likes +=1;
-        res.send(`The article ${article.name} has ${article.likes} likes!`);
-     } else {
-        res.send(`article not found`);
-     }
-});
-app.post("/api/articles/:name/comments",(req,res)=>{
-    const {name}=req.params;
-    const {by, comment} = req.body; 
 
-    const article= findArticle(name);
-    if(article) {
-       article.comments.push({by,comment});
-       res.send(article.comments);
-    } else {
-       res.send(`article doesn't exit!`);
+    app.get("/api/articles/:name", async (req,res) =>{
+        const {name} = req.params;
+        const article = await db.collection("articles").findOne({name});
+
+        if(article){
+            res.json(article);
+        }else{
+            res.send(404);
+        }
+
+    });
+
+    app.put("/api/articles/:name/likes",async(req,res)=>{
+        const {name} =req.params;
+
+        await db.collection("articles").updateOne({name},{$inc:{likes:1}});
+        const article = await db.collection("articles").findOne({name});
+        if(article){
+        res.json(article);
+        }
+        else{
+            res.send(`Nooo`)
+        }
+    });
+
+    app.post("/api/articles/:name/comments",async(req,res)=>{
+        const {name}=req.params;
+        const {by,comment} = req.body;
+        await db.collection("articles").updateOne(
+            {name} ,
+            {$push: {comments:{by,comment}}}
+        );
+        const article  = await db.collection("articles").findOne({name});
+        if(article){
+            res.json(article);
+        }else{
+            res.send("Nooo")
+        }
+    });
+
+    connectToDb( ()=> {
+     console.log("sucessfull completed to database");
+     app.listen(8001,()=>{
+        console.log("listening on http://localhost:8001"); 
+    });
+ });
+
+app.post("/api/register", async (req, res) => {
+    const { name, email, password } = req.body;
+
+    try {
+        const existingUser = await db.collection("users").findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ error: "Email already exists" });
+        }
+        await db.collection("users").insertOne({ name, email, password });
+
+        res.status(201).json({ message: "User registered successfully" });
+    } catch (error) {
+        console.error("Error registering user:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
-});
-
-
-app.listen(8000,()=>{
-    console.log("listening on 8000......... ");
 });

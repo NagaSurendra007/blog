@@ -23,7 +23,8 @@ const articles=[
     content : [
         "hi this is third article first content",
         "hi this is third article second content",
-        "hi this is third article third content"
+        "hi this is third article third content",
+        
     ]
 }
 
