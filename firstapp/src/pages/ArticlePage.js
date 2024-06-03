@@ -5,15 +5,22 @@ import axios from "axios";
 import NotfoundPage from "./NotfoundPage";
 import CommentsList from "../Components/commentsList";
 import AddCommentForm from "../Components/AddCommentForm"
+import useUser from "../hooks/useUser";
 import articles from "./Article-content";
 
 function ArticlePage() {
 const [articleInfo, setArticleInfo] = useState({ likes: 0, comments: [] });
 const { articleId } = useParams();
+const {user,isLoading}= useUser();
 
 useEffect(() => {
 const loadArticleInfo = async () => {
-const response = await axios.get(`/api/articles/${articleId}`);
+const token = user && (await user.getIdToken());
+const headers = token ? {authtoken : token} : {};
+
+const response = await axios.get(`/api/articles/${articleId}`,{
+    headers,
+});
 const newArticleInfo = response.data;
 setArticleInfo(newArticleInfo);
 };
@@ -24,7 +31,11 @@ loadArticleInfo();
 const article = articles.find((article) => article.name === articleId);
 
 const addLikes = async () => {
-const response = await axios.put(`/api/articles/${articleId}/likes`);
+const token = user && (await user.getIdToken());
+const headers = token ? { authtoken : token} : {};
+const response = await axios.put(`/api/articles/${articleId}/likes`,null,{
+    headers,
+});
 const updatedArticle = response.data;
 setArticleInfo(updatedArticle);
 
@@ -35,7 +46,10 @@ return (
 <>
 <h1>{article.title}</h1>
 <div className="upvote-section">
-<button onClick={addLikes}>Like</button>
+    {user
+       ? <button onClick={addLikes}>Like</button>
+       : <button>login to like </button>
+    }
 </div>
 <p>
 {article.title} has {articleInfo.likes} likes!...
@@ -44,11 +58,16 @@ return (
 <p key={i}>{paragraph}</p>  
 ))}
 
-<AddCommentForm
-articleName={articleId}
-onArticleUpdated={updatedArticle => setArticleInfo(updatedArticle)}
+{ user
+    ? <AddCommentForm
+      articleName={articleId}
+     onArticleUpdated={updatedArticle => setArticleInfo(updatedArticle)}
+         />
 
-></AddCommentForm>
+    : <button>login to comment </button>
+
+
+}
 
 <CommentsList comments={articleInfo.comments}></CommentsList>
 </>
